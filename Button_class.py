@@ -8,8 +8,13 @@ class Button:
         self.width = width
         self.height = height
         self.enabled = enabled
+        self.block  = pygame.transform.scale(pygame.image.load('images/block.png').convert_alpha(), (self.height , self.height-10))
+    
+    def change_text(self, new_text):
+        self.text = new_text
+        
 
-    def draw(self, font_size, padding):
+    def draw(self, font_size):
         font = pygame.font.Font('freesansbold.ttf', font_size)
         button_text = font.render(self.text, True, 'black')
         button_rect = pygame.rect.Rect((self.x_pos-self.width//2, self.y_pos-self.height//2), (self.width, self.height))
@@ -24,17 +29,20 @@ class Button:
                 pygame.draw.rect(self.window, 'gray', button_rect, 0, 5)
             else:
                 pygame.draw.rect(self.window, 'light gray', button_rect, 0, 5)
+            text_rect = button_text.get_rect(center=button_rect.center)
+            self.window.blit(button_text, text_rect)
 
         else:
-            pygame.draw.rect(self.window, 'black', button_rect, 0, 5)
+            pygame.draw.rect(self.window, 'gray', button_rect, 0, 5)
+            self.window.blit(self.block, (self.x_pos - 22, self.y_pos -21))
 
         pygame.draw.rect(self.window, 'black', button_rect, 2, 5)
         # self.window.blit(button_text, (self.x_pos-self.width//2+padding, self.y_pos-self.height//2+padding))
 
-        text_rect = button_text.get_rect(center=button_rect.center)  # Đặt văn bản vào giữa hình chữ nhật
+        # text_rect = button_text.get_rect(center=button_rect.center)  # Đặt văn bản vào giữa hình chữ nhật
 
         # Hiển thị văn bản
-        self.window.blit(button_text, text_rect)
+        
 
     def check_click(self):
         mouse_pos = pygame.mouse.get_pos()

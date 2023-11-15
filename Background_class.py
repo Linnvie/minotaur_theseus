@@ -6,12 +6,13 @@ class Background():
 
         # Vẽ mê cung theo size màn hình
         # size_window, square_size_scaled, screen_padding = calculate_screen_size(maze)
-        self.size_window = (950, 525)
-        self.screen_padding =50
+        # self.size_window = (950, 525)
+        # self.screen_padding =50
          #Kích thước mỗi ô trong mecung
-        self.square_size_scaled= 85
-        self.img = pygame.transform.scale(pygame.image.load('images/background.jpg').convert(), self.size_window)
+        # self.square_size_scaled= 85
         self.maze = maze
+        self.img = pygame.transform.scale(pygame.image.load('images/background.jpg').convert(), self.maze.size_window)
+        
         # self.width = self.img.get_width()
         # self.height = self.img.get_height()
 
@@ -30,12 +31,12 @@ class Background():
 
         self.door_ainms = door_sheet_down.get_animation(door_sprite_rects, scale = 0.9)
         self.door_img = self.door_ainms[self.current_door]
-
+        
         
         
     def draw(self, window):
         window.blit(self.img, (0,0))
-        window.blit(self.door_img, (18+self.screen_padding + self.square_size_scaled*self.maze.G.graph['goal'][0],self.screen_padding - 3  + self.square_size_scaled*self.maze.G.graph['goal'][1]))
+        window.blit(self.door_img, (18+self.maze.screen_padding + self.maze.square_size_scaled*self.maze.G.graph['goal'][0],self.maze.screen_padding - 3  + self.maze.square_size_scaled*self.maze.G.graph['goal'][1]))
         self.draw_grid(window)
         
     # def update(self):
@@ -48,7 +49,7 @@ class Background():
             #     self.attack_animation = False
             
             self.door_img = self.door_ainms[self.current_door]
-    
+   
     def draw_grid(self, window):
 
 	    # Animation constants
@@ -57,49 +58,50 @@ class Background():
 
         def draw_walls():
             #Độ dày nét vẽ
-            wall_width = int(self.square_size_scaled/10)
+            wall_width = int(self.maze.square_size_scaled/10)
 
             width_buffer = wall_width / 2 -1
             # Draw grids
             # Vertical
             #Đối số width là độ dày nét vẽ, start_pos là tọa độ điểm bắt đầu, end_pos là tọa độ điểm kết thúc
+            # print("bg",self.maze.size_grid)
             for i in range(1,self.maze.size_grid[0]):
                 pygame.draw.line( surface = window, 
                                 color = (230,230,230),
-                                start_pos = (self.screen_padding + self.square_size_scaled*i, self.screen_padding - width_buffer),
-                                end_pos = (self.screen_padding + self.square_size_scaled*i, self.size_window[1] - self.screen_padding + width_buffer), 
+                                start_pos = (self.maze.screen_padding + self.maze.square_size_scaled*i, self.maze.screen_padding - width_buffer),
+                                end_pos = (self.maze.screen_padding + self.maze.square_size_scaled*i, self.maze.size_window[1] - self.maze.screen_padding + width_buffer), 
                                 width = wall_width)
 		    # Horizontal
             for i in range(1, self.maze.size_grid[1]):
                 pygame.draw.line(surface = window, 
                                 color = (230,230,230), 
-                                start_pos = (self.screen_padding -width_buffer, self.screen_padding + self.square_size_scaled*i), 
-                                end_pos = (self.size_window[0] - self.screen_padding + width_buffer, self.screen_padding + self.square_size_scaled*i), 
+                                start_pos = (self.maze.screen_padding -width_buffer, self.maze.screen_padding + self.maze.square_size_scaled*i), 
+                                end_pos = (self.maze.size_window[0] - self.maze.screen_padding + width_buffer, self.maze.screen_padding + self.maze.square_size_scaled*i), 
                                 width = wall_width)
             # Vẽ đường bao toàn mê cung
             # Top
             pygame.draw.line(surface = window, 
                             color = (0,0,0), 
-                            start_pos = (self.screen_padding - width_buffer, self.screen_padding), 
-                            end_pos = (self.size_window[0] - self.screen_padding + width_buffer, self.screen_padding), 
+                            start_pos = (self.maze.screen_padding - width_buffer, self.maze.screen_padding), 
+                            end_pos = (self.maze.size_window[0] - self.maze.screen_padding + width_buffer, self.maze.screen_padding), 
                             width = wall_width)
 		    # Left
             pygame.draw.line(surface = window, 
                             color = (0,0,0), 
-                            start_pos = (self.screen_padding, self.screen_padding - width_buffer), 
-                            end_pos = (self.screen_padding, self.size_window[1] - self.screen_padding+ width_buffer), 
+                            start_pos = (self.maze.screen_padding, self.maze.screen_padding - width_buffer), 
+                            end_pos = (self.maze.screen_padding, self.maze.size_window[1] - self.maze.screen_padding+ width_buffer), 
                             width = wall_width)
 		    # Right
             pygame.draw.line(surface = window, 
                             color = (0,0,0), 
-                            start_pos = (self.size_window[0] - self.screen_padding, self.screen_padding - width_buffer), 
-                            end_pos = (self.size_window[0] - self.screen_padding, self.size_window[1] - self.screen_padding + width_buffer), 
+                            start_pos = (self.maze.size_window[0] - self.maze.screen_padding, self.maze.screen_padding - width_buffer), 
+                            end_pos = (self.maze.size_window[0] - self.maze.screen_padding, self.maze.size_window[1] - self.maze.screen_padding + width_buffer), 
                             width = wall_width)
 		    # Bottom
             pygame.draw.line(surface = window, 
                             color = (0,0,0), 
-                            start_pos = (self.screen_padding - width_buffer, self.size_window[1] - self.screen_padding), 
-                            end_pos = (self.size_window[0] - self.screen_padding + width_buffer, self.size_window[1] - self.screen_padding), 
+                            start_pos = (self.maze.screen_padding - width_buffer, self.maze.size_window[1] - self.maze.screen_padding), 
+                            end_pos = (self.maze.size_window[0] - self.maze.screen_padding + width_buffer, self.maze.size_window[1] - self.maze.screen_padding), 
                             width = wall_width)
 		    # Draw walls
             walls = []
@@ -122,7 +124,7 @@ class Background():
                 w1, w2 = self.change_wall_coordinates(wall)
                 # print("w11", w1, w2)
                 # +1 vì mảng bắt đầu đếm từ 0
-                w1, w2 = (self.screen_padding + self.square_size_scaled*int(w1[0]+1),self.screen_padding + self.square_size_scaled*int(w1[1]+1)), (self.screen_padding + self.square_size_scaled*int(w2[0]+1),self.screen_padding + self.square_size_scaled*int(w2[1]+1))
+                w1, w2 = (self.maze.screen_padding + self.maze.square_size_scaled*int(w1[0]+1),self.maze.screen_padding + self.maze.square_size_scaled*int(w1[1]+1)), (self.maze.screen_padding + self.maze.square_size_scaled*int(w2[0]+1),self.maze.screen_padding + self.maze.square_size_scaled*int(w2[1]+1))
                 wx1, wy1 = w1
                 wx2, wy2 = w2
            

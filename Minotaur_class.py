@@ -103,6 +103,7 @@ class Minotaur(AnimationSprite):
             pygame.event.set_allowed(pygame.KEYUP)
 
     def move(self):
+        
         # print("vào move")
         stay_location = self.maze.G.graph["mino_location"] 
         x = 0

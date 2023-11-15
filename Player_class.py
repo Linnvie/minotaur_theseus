@@ -11,6 +11,7 @@ class Player(AnimationSprite):
         self.mino = mino
         self.load_sprites()
         # self.sprites = sprite_sheet_down.get_animation(self.walk_down_sprite_rects, 1/10, scale = 0.5)
+        self.total_moves = 0
 
         self.current_sprite = 0
         self.img = self.walk_down_ainms[self.current_sprite]
@@ -131,6 +132,7 @@ class Player(AnimationSprite):
             print("không có")
             raise ValueError(str(direction) + " is not a valid direction.")
         else:
+            self.total_moves+=1
             self.moving=True
             player_location = self.maze.G.graph["player_location"]
             if direction == "skip":

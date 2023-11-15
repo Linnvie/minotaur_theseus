@@ -6,49 +6,49 @@ import sys
 
 class Grid:
     def __init__(self,  maze_infor = None, size_grid = (10,5), seed = None):
-        self.size_grid = size_grid
+        
         if maze_infor:
             self.maze_infor = maze_infor
             self.G = self.build_maze(self.maze_infor)
+            self.calculate_screen_size()
             
         else:
             self.G, self.maze_infor = self.build_random_maze(size_board = size_grid, seed = seed)
+            
         self.add_move_options()
 
         # tính toán các ô liền kề và có đường đi vào cửa để khi player tới đó sẽ tạo hiệu ứng mở cửa
         self.goal_neighbors = []
         self.cal_door_neighbors()
 
-# def calculate_screen_size(board):
-# 	# Take in board, specifically size_board. 
-# 	# Return the dimensions of the screen that will accommodate that board size. 
-# 	# The maximum window size that the display on my MacBook can comfortably acommodate is (1400, 800)
-# 		# At a scale_factor of 0.5, this is a maximum board dimension of 26x14
-# 	# So if I set each tile to be 100 px, then I should start scaling for boards larger than 7x7. 
+    def calculate_screen_size(self):
+        # Take in board, specifically size_board. 
+        # Return the dimensions of the screen that will accommodate that board size. 
+        # The maximum window size that the display on my MacBook can comfortably acommodate is (1400, 800)
+            # At a scale_factor of 0.5, this is a maximum board dimension of 26x14
+        # So if I set each tile to be 100 px, then I should start scaling for boards larger than 7x7. 
 
-# 	size_board = board.G.graph["size_board"]
+        self.size_grid = self.G.graph['size_grid']
 
-# 	# Define unscaled tile size
-# 	tile_size = 100 # 100 px
+        # Define unscaled tile size
+        self.square_size_scaled = 85 # 85 px
 
-# 	# Set edge buffer to be 50 px
-# 	screen_buffer = 50
+        # Set edge buffer to be 50 px
+        self.screen_padding = 50
 
-# 	# Set scaling factor
-# 	scale_factor = 0.5
+        # Set scaling factor
+        self.scale_factor = 0.6
 
-# 	# Scale the tile and board size if using a board with any dimension greater than 7. 
-# 	max_board_dim = max(size_board[0], size_board[1])
-# 	if max_board_dim > 7:
-# 		scaled = True
-# 		tile_size_scaled = int(tile_size * scale_factor)
-# 	else:
-# 		scaled = False
-# 		tile_size_scaled = tile_size
+        # Scale the tile and board size if using a board with any dimension greater than 7. 
+        max_board_dim = max(self.size_grid[0], self.size_grid[1])
+        if max_board_dim > 7:
+            # scaled = True
+            square_size_scaled = int(square_size_scaled * scale_factor)
+        # else:
+            # scaled = False
 
-# 	size_window = (size_board[0]*tile_size_scaled + screen_buffer*2, size_board[1]*tile_size_scaled + screen_buffer*2)
-	
-# 	return size_window, tile_size_scaled, screen_buffer
+        self.size_window = (self.size_grid[0]*self.square_size_scaled + self.screen_padding*2, self.size_grid[1]*self.square_size_scaled + self.screen_padding*2)
+        return self.size_window, self.square_size_scaled, self.screen_padding
 
     def player_location(self):
         return self.G.graph["player_location"]
@@ -62,14 +62,14 @@ class Grid:
     def build_maze(self, maze_infor, verbose = False):
         # maze_key phải là một từ điển có các thuộc tính "size_grid", "walls", "player_start", "mino_start" và "goal"
         # Trả về một đối tượng đồ thị kiểu NetworkX
-        size_grid = maze_infor["size_grid"] 
+        self.size_grid = maze_infor["sizeBoard"] 
         #Tạo đồ thị
-        G = nx.grid_2d_graph(*size_grid)
+        G = nx.grid_2d_graph(*self.size_grid)
 
         #Thêm các thuộc tính của G.graph (là kiểu dictionary)
-        G.graph['size_grid'] = size_grid
-        G.graph['player_location']= maze_infor["player_start"]
-        G.graph['mino_location'] = maze_infor["mino_start"]
+        G.graph['size_grid'] = self.size_grid
+        G.graph['player_location']= maze_infor["playerStart"]
+        G.graph['mino_location'] = maze_infor["minoStart"]
         G.graph['goal'] = maze_infor["goal"]
         # Cho tất cả các cạnh của đồ thị weight đều bằng 0, tức là được đi qua (không bị tường chặn)
         G.add_edges_from(G.edges, weight = 0)
