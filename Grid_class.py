@@ -5,9 +5,12 @@ import sys
 
 
 class Grid:
-    def __init__(self,  maze_infor = None, size_grid = (10,5), seed = None):
-        
+    def __init__(self,  maze_infor = None, size_grid = (10,5), seed = None):  
         if maze_infor:
+            self.scale_factor=1
+            self.scale_factor_player=0.6
+            self.scale_factor_mino=1.26
+            self.scale_factor_door=0.86
             self.maze_infor = maze_infor
             self.G = self.build_maze(self.maze_infor)
             self.calculate_screen_size()
@@ -37,17 +40,23 @@ class Grid:
         self.screen_padding = 50
 
         # Set scaling factor
-        self.scale_factor = 0.6
+        self.scale_factor = 0.7
 
         # Scale the tile and board size if using a board with any dimension greater than 7. 
-        max_board_dim = max(self.size_grid[0], self.size_grid[1])
-        if max_board_dim > 7:
+        
+        if self.size_grid[1] > 7 or self.size_grid[0]>14:
             # scaled = True
-            square_size_scaled = int(square_size_scaled * scale_factor)
+            self.square_size_scaled = int(self.square_size_scaled * self.scale_factor)
+            self.scale_factor_player=0.43
+            self.scale_factor_mino=0.86
+            self.scale_factor_door=0.65
         # else:
             # scaled = False
+        if self.size_grid[0] < 4:
+            self.screen_padding = 100
+            
 
-        self.size_window = (self.size_grid[0]*self.square_size_scaled + self.screen_padding*2, self.size_grid[1]*self.square_size_scaled + self.screen_padding*2)
+        self.size_window = (self.size_grid[0]*self.square_size_scaled + self.screen_padding*2, self.size_grid[1]*self.square_size_scaled + self.screen_padding*2+50)
         return self.size_window, self.square_size_scaled, self.screen_padding
 
     def player_location(self):
@@ -186,7 +195,6 @@ class Grid:
         else:
 			# Game is not over yet
             return False, False
-
 
     def build_random_maze(self, size_board = (10,5), seed = None, verbose = True):
         if seed is None:

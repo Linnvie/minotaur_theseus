@@ -1,6 +1,6 @@
 import pygame
 class Button:
-    def __init__(self, window, text, x, y, width, height, enabled):
+    def __init__(self, window, text, x, y, width, height, enabled, state=None):
         self.window = window
         self.text = text
         self.x_pos = x
@@ -8,12 +8,12 @@ class Button:
         self.width = width
         self.height = height
         self.enabled = enabled
+        self.state = state
         self.block  = pygame.transform.scale(pygame.image.load('images/block.png').convert_alpha(), (self.height , self.height-10))
     
     def change_text(self, new_text):
         self.text = new_text
         
-
     def draw(self, font_size):
         font = pygame.font.Font('freesansbold.ttf', font_size)
         button_text = font.render(self.text, True, 'black')
@@ -43,20 +43,23 @@ class Button:
 
         # Hiển thị văn bản
         
-
-    def check_click(self):
+    def check_click(self, scale_x=1, scale_y=1):
         mouse_pos = pygame.mouse.get_pos()
+        # print(mouse_pos)
         left_click = pygame.mouse.get_pressed()[0]
         
-        button_rect = pygame.rect.Rect((self.x_pos-self.width//2, self.y_pos-self.height//2), (self.width, self.height))
+        button_rect = pygame.rect.Rect((self.x_pos* scale_x-self.width//2, self.y_pos*scale_y-self.height//2), (self.width, self.height))
         if left_click and button_rect.collidepoint(mouse_pos) and self.enabled:
+            
             return True
         else:
             return False
 
-    def check_hover(self):
+    # scale lấy màn hình lớn hơn chia màn hình bé hơn
+    def check_hover(self, scale_x=1, scale_y=1):
         mouse_pos = pygame.mouse.get_pos()
-        button_rect = pygame.rect.Rect((self.x_pos-self.width//2, self.y_pos-self.height//2), (self.width, self.height))
+        # print(mouse_pos)
+        button_rect = pygame.rect.Rect((self.x_pos* scale_x-self.width//2, self.y_pos*scale_y-self.height//2), (self.width, self.height))
         if button_rect.collidepoint(mouse_pos) and self.enabled:
             return True
         else:

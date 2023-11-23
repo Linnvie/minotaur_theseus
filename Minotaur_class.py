@@ -1,15 +1,16 @@
 from Spritesheet_class import Spritesheet
-from AnimationSprite_class import AnimationSprite
 import pygame
 
 
 # ban đầu 820,460,  50,72,  mino 1.05,   player 0.5
 
-class Minotaur(AnimationSprite):
+class Minotaur(pygame.sprite.Sprite):
     def __init__(self, maze):
         self.maze = maze
         #Vị trí tọa độ mino đang đứng trên lưới
         self.location = maze.G.graph["mino_location"]
+
+        self.scale = self.maze.scale_factor_mino
         self.load_sprites()
 
         self.current_sprite = 0
@@ -19,9 +20,9 @@ class Minotaur(AnimationSprite):
         self.mino_moves = [self.maze.G.graph["mino_location"]]
         self.current_moving = None
         
-    def draw(self, win, screen_padding, square_size_scaled):
+    def draw(self, win):
         # print(screen_padding, square_size_scaled)
-        win.blit(self.img, (14+screen_padding + square_size_scaled*self.location[0], 4+ screen_padding + square_size_scaled*self.location[1]))
+        win.blit(self.img, (14*self.maze.scale_factor+self.maze.screen_padding + self.maze.square_size_scaled*self.location[0], 6*self.maze.scale_factor+ self.maze.screen_padding + self.maze.square_size_scaled*self.location[1]))
 
     def load_sprites(self):
         sprite_width = 48
@@ -34,7 +35,7 @@ class Minotaur(AnimationSprite):
                 (0, 132, sprite_width, sprite_height),
                         ] 
 
-        self.walk_down_ainms = sprite_sheet.get_animation(walk_down_sprite_rects, scale = 1.28)
+        self.walk_down_ainms = sprite_sheet.get_animation(walk_down_sprite_rects, scale = self.scale)
 
         walk_up_sprite_rects = [(0, 2, sprite_width, sprite_height),
                  (48, 0, sprite_width, sprite_height),
@@ -43,7 +44,7 @@ class Minotaur(AnimationSprite):
                 (0, 2, sprite_width, sprite_height),
                ]  
 
-        self.walk_up_ainms = sprite_sheet.get_animation(walk_up_sprite_rects, scale = 1.28)
+        self.walk_up_ainms = sprite_sheet.get_animation(walk_up_sprite_rects, scale = self.scale)
 
         walk_left_sprite_rects = [(0, 192, sprite_width, sprite_height),
                 (48, 190, sprite_width, sprite_height),
@@ -52,7 +53,7 @@ class Minotaur(AnimationSprite):
                  (0, 192, sprite_width, sprite_height)
              ]  # Vị trí của các sprite trên sprite sheet
 
-        self.walk_left_ainms = sprite_sheet.get_animation(walk_left_sprite_rects, scale = 1.28)
+        self.walk_left_ainms = sprite_sheet.get_animation(walk_left_sprite_rects, scale = self.scale)
 
         walk_right_sprite_rects = [(0, 67, sprite_width, sprite_height),
                 (48, 65, sprite_width, sprite_height),
@@ -61,7 +62,7 @@ class Minotaur(AnimationSprite):
                 (0, 67, sprite_width, sprite_height)
             ]  # Vị trí của các sprite trên sprite sheet
 
-        self.walk_right_ainms = sprite_sheet.get_animation(walk_right_sprite_rects, scale = 1.28)
+        self.walk_right_ainms = sprite_sheet.get_animation(walk_right_sprite_rects, scale = self.scale)
     
     def update(self,speed):
         if len(self.movings)>0:
@@ -101,6 +102,7 @@ class Minotaur(AnimationSprite):
         else:
             pygame.event.set_allowed(pygame.KEYDOWN)
             pygame.event.set_allowed(pygame.KEYUP)
+            pygame.event.set_allowed(pygame.MOUSEBUTTONDOWN)
 
     def move(self):
         

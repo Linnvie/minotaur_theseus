@@ -5,6 +5,7 @@ class Spritesheet:
         self.filename = filename
         self.sprite_sheet = pygame.image.load(filename).convert_alpha()
         self.bg = bg
+        
     def get_image(self, frame, scale = None, flip = False):
         image = self.sprite_sheet.subsurface(pygame.Rect(frame))
 

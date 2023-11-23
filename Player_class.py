@@ -1,14 +1,14 @@
 from Spritesheet_class import Spritesheet
-from AnimationSprite_class import AnimationSprite
 import pygame, time
 import math
 
-class Player(AnimationSprite):
+class Player(pygame.sprite.Sprite):
     def __init__(self, maze,  *groups, mino):
         super().__init__(groups)
         # Mê cung người chơi đang đứng
         self.maze = maze
         self.mino = mino
+        self.scale=self.maze.scale_factor_player
         self.load_sprites()
         # self.sprites = sprite_sheet_down.get_animation(self.walk_down_sprite_rects, 1/10, scale = 0.5)
         self.total_moves = 0
@@ -33,7 +33,7 @@ class Player(AnimationSprite):
                         (835, 0, 105, 128),
                         (935, 0, 105, 128)]  # Vị trí của các sprite trên sprite sheet
 
-        self.walk_down_ainms = sprite_sheet_down.get_animation(walk_down_sprite_rects, scale = 0.6)
+        self.walk_down_ainms = sprite_sheet_down.get_animation(walk_down_sprite_rects, scale = self.scale)
 
         sprite_sheet_up = Spritesheet('images/Walk_Up.png')
         walk_up_sprite_rects = [(2, 20, 100, 128),
@@ -47,7 +47,7 @@ class Player(AnimationSprite):
                 (788, 20, 100, 128),
                 (883, 20, 97, 128)]  # Vị trí của các sprite trên sprite sheet
 
-        self.walk_up_ainms = sprite_sheet_up.get_animation(walk_up_sprite_rects, scale = 0.6)
+        self.walk_up_ainms = sprite_sheet_up.get_animation(walk_up_sprite_rects, scale = self.scale)
         # self.store_animation("walk_up", walk_up_ainms)
 
         sprite_sheet_left = Spritesheet('images/Walk_Left.png')
@@ -62,7 +62,7 @@ class Player(AnimationSprite):
                 (1670, 0, 134, 123),
                 (1670, 0, 134, 123)]  # Vị trí của các sprite trên sprite sheet
 
-        self.walk_left_ainms = sprite_sheet_left.get_animation(walk_left_sprite_rects, scale = 0.6)
+        self.walk_left_ainms = sprite_sheet_left.get_animation(walk_left_sprite_rects, scale = self.scale)
 
         sprite_sheet_right = Spritesheet('images/Walk_Right.png')
         walk_right_sprite_rects = [(38, 0, 134, 123),
@@ -76,18 +76,18 @@ class Player(AnimationSprite):
                 (1580, 0, 134, 123),
                 (1770, 0, 134, 123)]  # Vị trí của các sprite trên sprite sheet
 
-        self.walk_right_ainms = sprite_sheet_right.get_animation(walk_right_sprite_rects, scale = 0.6)
+        self.walk_right_ainms = sprite_sheet_right.get_animation(walk_right_sprite_rects, scale = self.scale)
 
-    def draw(self, win, screen_padding, square_size_scaled):
+    def draw(self, win):
         self.window = win
-        win.blit(self.img, (1+screen_padding + square_size_scaled*self.location[0], screen_padding + 9 + square_size_scaled*self.location[1]))
+        win.blit(self.img, (1*self.maze.scale_factor+self.maze.screen_padding + self.maze.square_size_scaled*self.location[0], self.maze.screen_padding + 10*self.maze.scale_factor + self.maze.square_size_scaled*self.location[1]))
     
-
     def update(self,speed):
         if self.moving:
-
+            # Chặn các thao tác di chuyển tiếp người chơi khi chưa đi đến điểm dích
             pygame.event.set_blocked(pygame.KEYDOWN)
             pygame.event.set_blocked(pygame.KEYUP)
+            pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
             s = round((speed/10), 1)
 
             if self.moving_down == True:
@@ -116,13 +116,6 @@ class Player(AnimationSprite):
             self.maze.G.graph["player_location"] = player_location
 		    # Return player_location
             self.location = player_location
-            
-            # print("đgg", int(self.current_sprite), len(self.sprites), self.moving, player_location)
-        # else:
-        #     # self.mino.move()
-        #     pygame.event.set_allowed(pygame.KEYDOWN)
-        #     pygame.event.set_allowed(pygame.KEYUP)
-        # return (self.location[0], math.floor(self.location[1]))
 
     def move(self, direction=None):
         # clock = pygame.time.Clock()
@@ -152,7 +145,6 @@ class Player(AnimationSprite):
                 player_location = (self.location[0] + 0, self.location[1] + 1)
                 self.moving_down = True	  
         return player_location
-
 
     def move_in_solve(self, direction):
         if direction not in self.maze.get_move_options()["player"]:
