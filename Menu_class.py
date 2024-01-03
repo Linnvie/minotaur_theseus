@@ -164,6 +164,7 @@ class LevelMenu(Menu):
                         # button.draw(28)
                     else:
                         button = Button(self.game.display, "", self.w/3*2, s, 200, 50, False)
+                        s=s+80
                 
                 button.draw(26)  
 
@@ -768,12 +769,12 @@ class TextMenu(Menu):
         self.y_post = self.game.DISPLAY_H / 12 if y_post == None else y_post
         self.text_lines = text_lines
 
-    def update(self, line_high =25, size =18, x_pos=400, y_post=None, text_lines=[]):
-        self.line_high = line_high
-        self.size = size
-        self.x_pos = x_pos
-        self.y_post = self.game.DISPLAY_H / 12 if y_post == None else y_post
-        self.text_lines = text_lines
+    # def update(self, line_high =25, size =18, x_pos=400, y_post=None, text_lines=[]):
+    #     self.line_high = line_high
+    #     self.size = size
+    #     self.x_pos = x_pos
+    #     self.y_post = self.game.DISPLAY_H / 12 if y_post == None else y_post
+    #     self.text_lines = text_lines
        
 
     def display_menu(self):

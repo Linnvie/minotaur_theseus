@@ -130,6 +130,9 @@ class Player(pygame.sprite.Sprite):
             player_location = self.maze.G.graph["player_location"]
             if direction == "skip":
                 self.moving = False
+                pygame.event.set_blocked(pygame.KEYDOWN)
+                pygame.event.set_blocked(pygame.KEYUP)
+                pygame.event.set_blocked(pygame.MOUSEBUTTONDOWN)
                 self.mino.move()
             elif direction == "right":
                 player_location = (self.location[0] + 1, self.location[1] + 0)
@@ -144,6 +147,7 @@ class Player(pygame.sprite.Sprite):
             elif direction == "down":
                 player_location = (self.location[0] + 0, self.location[1] + 1)
                 self.moving_down = True	  
+            
         return player_location
 
     def move_in_solve(self, direction):

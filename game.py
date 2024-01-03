@@ -86,7 +86,7 @@ class Game():
         self.options = OptionsMenu(self)
         self.tutorial = TextMenu(self, text_lines= text_lines2)
         self.mythology = TextMenu(self, text_lines= text_lines1)
-        self.help_menu = TextMenu(self, text_lines= text_lines1, size =25, line_high =30)
+        self.help_menu = TextMenu(self, size =25, line_high =30)
         self.error_menu = TextMenu(self,line_high =60, size =40, x_pos=400, y_post=120, text_lines=["Server error!", " Please check ","your network connection!"])
         self.win_menu = EndMenu(self,"Well done!", "You escaped", "the Minotaur!","Next")
         self.lose_menu = EndMenu(self, "Oh no...", "The Minotaur", "got you!", "Undo")
@@ -100,21 +100,21 @@ class Game():
     def save_and_update_data(self):
         # gọi API để lưu dữ liệu
         print("Saving data...")
-        # if len(self.new_data)>0:
-        #     print("Saving data olala")
-        #     url = 'http://localhost:8080/api/v1/save-update-level'
+        if len(self.new_data)>0:
+            print("Saving data olala")
+            url = 'http://localhost:8080/api/v1/save-update-level'
 
-        #     print("dataaaa", self.new_data)
+            print("dataaaa", self.new_data)
 
-        #     headers = {'Content-Type': 'application/json'}
-        #     response = requests.post(url, json=self.new_data, headers=headers)
+            headers = {'Content-Type': 'application/json'}
+            response = requests.post(url, json=self.new_data, headers=headers)
 
-        #     if response.status_code == 200:
-        #         print("Request successful")
-        #         # print(response.json())
-        #     else:
-        #         print("Request failed with status code:", response.status_code)
-        #         print(response.text)  
+            if response.status_code == 200:
+                print("Request successful")
+                # print(response.json())
+            else:
+                print("Request failed with status code:", response.status_code)
+                print(response.text)  
 
     def set_volume(self):
         pygame.mixer.music.set_volume(self.current_volume)
@@ -171,10 +171,7 @@ class Game():
                     print("sol2",solve2(self.maze))
 
                 if event.key == pygame.K_m:
-                    self.maze.G.graph["player_location"] = self.player_moves[0]
-                    self.maze.G.graph["mino_location"] = self.mino.mino_moves[0]
-					
-                    solve3(self.maze)
+                    self.show_hint()
     
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.music_on:
@@ -202,21 +199,25 @@ class Game():
                     self.restart()
 
                 if self.button_help.check_click():
-                    self.maze.G.graph["player_location"] = self.player_moves[0]
-                    self.maze.G.graph["mino_location"] = self.mino.mino_moves[0]
-					
-                    is_solve, solves =  solve3(self.maze)
-                    solves =  [" -> ".join(str(x) for x in solves[i:i+5]) for i in range(0, len(solves), 5)]
-                   
-                    self.help_menu.text_lines = solves
-                    self.curr_menu = self.help_menu
-                    self.playing=False
+                    self.show_hint()
 
                 if self.button_back.check_click():
                     self.back_level_page()
 
                     
         # print("move",self.player_moves, self.mino.mino_moves, self.maze.G.graph["player_location"], self.maze.G.graph["mino_location"])
+    
+    def show_hint(self):
+        self.maze.G.graph["player_location"] = self.player_moves[0]
+        self.maze.G.graph["mino_location"] = self.mino.mino_moves[0]
+        
+        is_solve, solves =  solve3(self.maze)
+        solves_half = solves[:(len(solves)//2)]
+        solves =  [" -> ".join(str(x) for x in solves_half[i:i+5]) for i in range(0, len(solves_half), 5)]
+        
+        self.help_menu.text_lines = solves
+        self.curr_menu = self.help_menu
+        self.playing=False
 
     def restart(self):
         # print("restart")
@@ -239,6 +240,7 @@ class Game():
             self.player.location = self.maze.G.graph["player_location"]
             self.mino.location = self.maze.G.graph["mino_location"]
             # self.mino.movings = []
+            self.player.total_moves+=1
             self.player_moves.pop()
             self.mino.mino_moves.pop()
             self.mino.mino_moves.pop()
